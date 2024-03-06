@@ -210,7 +210,7 @@ class Loop():
     #endregion
 
 class Resistor():
-    #region  constructor
+    # region constructor
     def __init__(self, R=1.0, i=0.0, name='ab'):
         """
         Defines a resistor to have a self.Resistance, self.Current, and self.Name instance variables.
@@ -218,10 +218,11 @@ class Resistor():
         :param i: current in amps
         :param name: name of resistor by alphabetically ordered pair of node names
         """
-        #JES Missing Code = R
-        #JES Missing Code = i
-        #JES Missing Code = name
-    #endregion
+        self.Resistance = R  # Assigns the resistance value to the instance variable
+        self.Current = i     # Assigns the current value to the instance variable
+        self.Name = name     # Assigns the name to the instance variable
+    # endregion
+
 
     #region methods/functions
     def DeltaV(self):
@@ -243,7 +244,6 @@ class VoltageSource():
         """
         self.Voltage = V
         self.Name=name
-    #endregion
 
 #endregion
 
@@ -253,16 +253,13 @@ def main():
     This program solves for the unknown currents in the circuit of the homework assignment.
     :return: nothing
     """
+    
+    Net = ResistorNetwork()  # Instantiate a resistor network object
+    Net.BuildNetworkFromFile('ResistorNetwork.txt')  # Call the method to build the network from the text file
+    IVals = Net.AnalyzeCircuit()  # Analyze the circuit
+    
+    # If you want to print the results, uncomment the following line:
+    print("Currents in the network:", IVals)
 
-    Net = ResistorNetwork()
-    Net.build_network_from_file('ResistorNetwork.txt')
-    IVals = Net.AnalyzeCircuit()
-
-    # Print the calculated current values to the console
-    print("Calculated current values in the network: ", IVals)
-
-# endregion
-# region function calls
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
-# endregion
