@@ -1,0 +1,55 @@
+# A resistor network is made of Resistors, Voltage Sources, Nodes and Loops
+# Nodes are given a unique name of one letter
+# Resistors are named by the nodes they connect arranged in alphabetical order.  If the current direction and traversal
+#      direction across a resistor is the same, the voltage decreases.  If the traversal direction and current direction
+#      are opposite, the voltage increases.
+# Voltage sources are named by the nodes they connect arranged in alphabetical order.  The voltage source value
+#      is in reference to the direction of the nodes (i.e., when traversing a loop in alphabetical order the voltage
+#      increases and when traversing the opposite direction, the voltage decreases)
+
+<Resistor>
+Name = ad
+Resistance = 2
+</Resistor>
+
+<Resistor>
+Name = bc
+Resistance = 2
+</Resistor>
+
+<Resistor>
+Name = cd
+Resistance = 1
+</Resistor>
+
+<Resistor>
+Name = ce
+Resistance = 4
+</Resistor>
+
+<Resistor>
+Name = de
+Resistance = 5
+</Resistor>
+
+<Source>
+Name = de
+Type = Voltage
+Value = 32
+</Source>
+
+<Source>
+Name = ab
+Type = Voltage
+Value = 16
+</Source>
+
+<Loop>
+Name = L1
+Nodes = a,b,c,d
+</Loop>
+
+<Loop>
+Name = L2
+Nodes = c,d,e
+</Loop>
