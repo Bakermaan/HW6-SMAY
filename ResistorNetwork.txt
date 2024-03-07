@@ -27,11 +27,6 @@ Name = ce
 Resistance = 4
 </Resistor>
 
-<Resistor>
-Name = de
-Resistance = 5
-</Resistor>
-
 <Source>
 Name = de
 Type = Voltage
