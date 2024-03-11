@@ -1,6 +1,18 @@
 from rankine import rankine
 
 def test_rankine_cycle():
+    """
+    Test function for the Rankine cycle.
+
+    This function tests the Rankine cycle with different scenarios, including saturated vapor and superheated vapor
+    entering the turbine inlet. It creates Rankine cycle instances, calculates their properties, and prints summaries.
+
+    Raises:
+        AssertionError: If the test fails.
+
+    Returns:
+        None
+    """
     # Test the Rankine cycle with saturated vapor entering the turbine
     print("Testing Rankine Cycle with Saturated Vapor at Turbine Inlet")
     saturated_rankine = rankine(p_low=8, p_high=8000, t_high=None, name="Saturated Rankine Cycle")
