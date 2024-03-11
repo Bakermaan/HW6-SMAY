@@ -1,4 +1,4 @@
-from Steam import steam
+from steam import steam
 
 class rankine():
     def __init__(self, p_low=8, p_high=8000, t_high=None, name='Rankine Cycle'):
