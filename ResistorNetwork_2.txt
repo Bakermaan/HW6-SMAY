@@ -6,6 +6,7 @@
 # Voltage sources are named by the nodes they connect arranged in alphabetical order.  The voltage source value
 #      is in reference to the direction of the nodes (i.e., when traversing a loop in alphabetical order the voltage
 #      increases and when traversing the opposite direction, the voltage decreases)
+#this had been modifed by irvin to fit the new circuit, adding an addtional lopp and 2 nodes
 
 <Resistor>
 Name = ad
@@ -23,17 +24,22 @@ Resistance = 1
 </Resistor>
 
 <Resistor>
-Name = ce
+Name = ec
 Resistance = 4
 </Resistor>
 
 <Resistor>
-Name = de
+Name = ed
 Resistance = 5
 </Resistor>
 
+<Resistor>
+Name = df
+Resistance = 0
+</Resistor>
+
 <Source>
-Name = de
+Name = ef
 Type = Voltage
 Value = 32
 </Source>
@@ -52,4 +58,9 @@ Nodes = a,b,c,d
 <Loop>
 Name = L2
 Nodes = c,d,e
+</Loop>
+
+<Loop>
+Name = L3
+Nodes = e,d,f
 </Loop>
