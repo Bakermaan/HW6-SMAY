@@ -7,29 +7,74 @@ from scipy.interpolate import griddata
 
 # region class definitions
 class steam:
+    """
+    A class representing steam properties.
+
+    This class models the properties of steam, including pressure, temperature, quality, specific volume,
+    specific enthalpy, specific entropy, and a useful identifier for reference. It provides methods for
+    calculating steam properties based on provided data and printing the properties.
+
+    Attributes:
+        p (float): The pressure of the steam in kilopascals (kPa).
+        T (float): The temperature of the steam in degrees Celsius (°C).
+        x (float): The quality of the steam.
+        v (float): The specific volume of the steam in cubic meters per kilogram (m^3/kg).
+        h (float): The specific enthalpy of the steam in kilojoules per kilogram (kJ/kg).
+        s (float): The specific entropy of the steam in kilojoules per kilogram per Kelvin (kJ/(kg*K)).
+        name (str): A useful identifier for the steam instance.
+        region (str): The region of the steam, which can be 'superheated', 'saturated', or 'two-phase'.
+
+    Methods:
+        __init__: Initializes a steam object with specified properties.
+        calc: Calculates the steam properties based on provided data.
+        print: Prints the steam properties.
+    """
+
     def __init__(self, pressure, T=None, x=None, v=None, h=None, s=None, name=None):
-        self.p = pressure  # pressure in kPa
-        self.T = T  # Temperature in degrees C
-        self.x = x  # quality
-        self.v = v  # specific volume in m^3/kg
-        self.h = h  # specific enthalpy in kJ/kg
-        self.s = s  # specific entropy in kJ/(kg*K)
-        self.name = name  # a useful identifier
-        self.region = None  # 'superheated' or 'saturated' or 'two-phase'
+        """
+        Initializes a steam object with specified properties.
+
+        Args:
+            pressure (float): The pressure of the steam in kilopascals (kPa).
+            T (float, optional): The temperature of the steam in degrees Celsius (°C). Defaults to None.
+            x (float, optional): The quality of the steam. Defaults to None.
+            v (float, optional): The specific volume of the steam in cubic meters per kilogram (m^3/kg).
+                Defaults to None.
+            h (float, optional): The specific enthalpy of the steam in kilojoules per kilogram (kJ/kg).
+                Defaults to None.
+            s (float, optional): The specific entropy of the steam in kilojoules per kilogram per Kelvin
+                (kJ/(kg*K)). Defaults to None.
+            name (str, optional): A useful identifier for the steam instance. Defaults to None.
+        """
+        self.p = pressure
+        self.T = T
+        self.x = x
+        self.v = v
+        self.h = h
+        self.s = s
+        self.name = name
+        self.region = None
         if T is None and x is None and v is None and h is None and s is None:
             return
         else:
             self.calc()
 
     def calc(self):
+        """
+        Calculates the steam properties based on provided data.
+
+        This method calculates the steam properties based on the provided data such as pressure, temperature,
+        quality, specific volume, specific enthalpy, and specific entropy. It utilizes interpolation techniques
+        to determine the properties depending on the region of the steam (superheated or saturated).
+        """
         # Load saturated steam properties from text file
         ts, ps, hfs, hgs, sfs, sgs, vfs, vgs = np.loadtxt('sat_water_table.txt', skiprows=1, unpack=True)
 
         # Load superheated steam properties from text file
         tcol, hcol, scol, pcol = np.loadtxt('superheated_water_table.txt', skiprows=1, unpack=True)
 
-        R = 8.314 / (18 / 1000)  # Ideal gas constant for water [J/(mol K)]/[kg/mol]
-        Pbar = self.p / 100  # Pressure in bar - 1 bar = 100 kPa roughly
+        R = 8.314 / (18 / 1000)
+        Pbar = self.p / 100
 
         # Get saturated properties using interpolation
         Tsat = float(griddata(ps, ts, (Pbar), method='linear'))
@@ -40,15 +85,15 @@ class steam:
         vf = float(griddata(ps, vfs, (Pbar), method='linear'))
         vg = float(griddata(ps, vgs, (Pbar), method='linear'))
 
-        self.hf = hf  # Save saturated liquid enthalpy for the object
+        self.hf = hf
 
         if self.T is not None and self.T > Tsat:
             self.region = 'Superheated'
             superheated_properties = griddata((pcol, tcol), (hcol, scol), (Pbar, self.T), method='linear')
             self.h, self.s = superheated_properties
-            self.x = None  # x is not defined in the superheated region
-            TK = self.T + 273.15  # Convert temperature to Kelvin
-            self.v = R * TK / (self.p * 1000)  # Ideal gas approximation for specific volume
+            self.x = None
+            TK = self.T + 273.15
+            self.v = R * TK / (self.p * 1000)
         elif self.x is not None:
             self.region = 'Saturated'
             self.T = Tsat
@@ -77,6 +122,12 @@ class steam:
                 # Code needed for superheated interpolation based on entropy
 
     def print(self):
+        """
+        Prints the steam properties.
+
+        This method prints the steam properties including the steam's name, region, pressure, temperature,
+        specific enthalpy, specific entropy, specific volume, and quality (if available).
+        """
         print('Name:', self.name)
         print('Region:', self.region)
         print(f'Pressure: {self.p:.2f} kPa')
@@ -97,8 +148,14 @@ class steam:
 
 # region function definitions
 def main():
+    """
+    Main function to demonstrate steam class usage.
+
+    This function demonstrates the usage of the steam class by creating instances of steam objects with
+    different properties, calculating their properties, and printing them.
+    """
     inlet = steam(pressure=7350, name='Turbine Inlet')
-    inlet.x = 0.9  # 90 percent quality
+    inlet.x = 0.9
     inlet.calc()
     inlet.print()
 
@@ -125,3 +182,4 @@ def main():
 if __name__ == "__main__":
     main()
 # endregion
+
