@@ -1,29 +1,56 @@
 from HW6_1_OOP import ResistorNetwork
 from scipy.optimize import fsolve
-import numpy as np
+
 
 class ResistorNetwork_2(ResistorNetwork):
-    def __init__(self):
-        # Call the constructor of the base class if it initializes any data.
-        super().__init__()  # This might need arguments based on your base class constructor.
+        def __init__(self):
+            # Call the constructor of the base class if it initializes any data.
+            super().__init__()  # This might need arguments based on your base class constructor.
 
-    def GetKirchoffVals(self, currents):
+    def GetKirchoffVals(self, i):
         """
         Overridden method to calculate the values for Kirchhoff's laws for the new circuit.
         This must be customized based on the circuit configuration.
         """
-        I1, I2, I3, I4, I5 = currents
-        # KVL for loop abcdea
-        eq1 = 2*I1 - I3 + 4*I5 - 16
-        # KVL for loop cdefc
-        eq2 = I3 + 4*I4 - 2*I2 - 32
-        # KVL for loop abdefa (outer loop)
-        eq3 = 2*I1 + 2*I2 - 48
-        # Currents at node d: I3 (incoming) = I4 + I2 (outgoing)
-        eq4 = I3 - I4 - I2
-        # Node b (additional equation if needed): I1 (incoming) = I5 (outgoing)
-        eq5 = I1 - I5
-        return np.array([eq1, eq2, eq3, eq4, eq5])
+        """
+        This function uses Kirchoff Voltage and Current laws to analyze this specific circuit
+        KVL:  The net voltage drop for a closed loop in a circuit should be zero
+        KCL:  The net current flow into a node in a circuit should be zero
+        :param i: a list of currents relevant to the circuit
+        :return: a list of loop voltage drops and node currents
+        """
+        """
+        pulled from a diffrent program i made to skip needing to call back the function
+        but still works 
+        """
+        # set current in resistors in the top loop.
+        '''after 12 hours of work, irvin has it! '''
+        self.GetResistorByName('ad').Current = i[0]  # I_1 in diagram
+        self.GetResistorByName('bc').Current = i[0]  # I_1 in diagram
+        self.GetResistorByName('cd').Current = i[2]  # I_3 in diagram
+        # set current in resistor in bottom loops.
+        self.GetResistorByName('df').Current = i[1]  # I_2 in diagram
+        self.GetResistorByName('ed').Current = i[3]  # I_4 in diagram
+        self.GetResistorByName('ec').Current = i[4]  # I_5 in diagram
+        # calculate net current into node c
+
+        Node_c_Current = sum([i[0], i[4], -i[2]])
+        # calculate net current into node d
+        Node_d_Current = sum([i[2], i[3], -i[0], -i[1]])
+
+        KVL = self.GetLoopVoltageDrops()  # two equations here
+
+        KVL.append(Node_c_Current)  # one equation here
+        KVL.append(Node_d_Current)  # one equation here
+    
+        # Ensure KVL has 5 elements
+        while len(KVL) < 5:
+            KVL.append(0.0)  # Fill with zeros if necessary
+        return [KVL[0], KVL[1], KVL[2], KVL[3], KVL[4]]
+        '''this is remement of debugging, left here for later as irvin is going to come back at a later date and find out
+        why it doesn't match with the sim he made'''
+
+    
 
     def AnalyzeCircuit(self):
         """
@@ -51,5 +78,10 @@ if __name__ == "__main__":
     # Analyze the new circuit
     currents = network.AnalyzeCircuit()
     
-    # Output the results
-    print("Currents in the circuit: I1 = {:.2f}, I2 = {:.2f}, I3 = {:.2f}, I4 = {:.2f}, I5 = {:.2f}".format(*currents))
+        # Output the results in a better manner with units
+    print("Currents in the circuit:")
+    print("I1 = {:.2f} ohms".format(currents[0]))
+    print("I2 = {:.2f} ohms".format(currents[1]))
+    print("I3 = {:.2f} ohms".format(currents[2]))
+    print("I4 = {:.2f} ohms".format(currents[3]))
+    print("I5 = {:.2f} ohms".format(currents[4]))
