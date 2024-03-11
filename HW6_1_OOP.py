@@ -126,9 +126,9 @@ class ResistorNetwork():
         i0 = [1.0, 1.0, 1.0]  # Adjust the size of this list based on the actual number of currents you are solving for
         i = fsolve(self.GetKirchoffVals,i0)
         # print output to the screen
-        print("I1 = {:0.1f}".format(i[0]))
-        print("I2 = {:0.1f}".format(i[1]))
-        print("I3 = {:0.1f}".format(i[2]))
+        print("I1 = {:0.01f} ohms".format(i[0]))
+        print("I2 = {:0.01f} ohms".format(i[1]))
+        print("I3 = {:0.01f} ohms".format(i[2]))
         return i
 
     def GetKirchoffVals(self,i):
