@@ -1,11 +1,13 @@
 from HW6_1_OOP import ResistorNetwork
 from scipy.optimize import fsolve
 
-
+"""so this calls back the first part, and uses many of the previous stuff
+however, we changed the  GetKirchoffVals(self, i):, def AnalyzeCircuit(self):, and the txt
+file so it goes with circuit 2. the math looks funky but the math checks out"""
 class ResistorNetwork_2(ResistorNetwork):
-        def __init__(self):
-            # Call the constructor of the base class if it initializes any data.
-            super().__init__()  # This might need arguments based on your base class constructor.
+    def __init__(self):
+        # Call the constructor of the base class if it initializes any data.
+        super().__init__()  # This might need arguments based on your base class constructor.
 
     def GetKirchoffVals(self, i):
         """
@@ -13,14 +15,15 @@ class ResistorNetwork_2(ResistorNetwork):
         This must be customized based on the circuit configuration.
         """
         """
-        This function uses Kirchoff Voltage and Current laws to analyze this specific circuit
-        KVL:  The net voltage drop for a closed loop in a circuit should be zero
-        KCL:  The net current flow into a node in a circuit should be zero
-        :param i: a list of currents relevant to the circuit
-        :return: a list of loop voltage drops and node currents
+                This function uses Kirchoff Voltage and Current laws to analyze this specific circuit
+                KVL:  The net voltage drop for a closed loop in a circuit should be zero
+                KCL:  The net current flow into a node in a circuit should be zero
+                :param i: a list of currents relevant to the circuit
+                :return: a list of loop voltage drops and node currents
+                """
         """
-        """
-        pulled from a diffrent program i made to skip needing to call back the function
+        pulled from a diffrent program i made to skip 
+        needing to call back the function
         but still works 
         """
         # set current in resistors in the top loop.
@@ -33,7 +36,6 @@ class ResistorNetwork_2(ResistorNetwork):
         self.GetResistorByName('ed').Current = i[3]  # I_4 in diagram
         self.GetResistorByName('ec').Current = i[4]  # I_5 in diagram
         # calculate net current into node c
-
         Node_c_Current = sum([i[0], i[4], -i[2]])
         # calculate net current into node d
         Node_d_Current = sum([i[2], i[3], -i[0], -i[1]])
@@ -42,14 +44,13 @@ class ResistorNetwork_2(ResistorNetwork):
 
         KVL.append(Node_c_Current)  # one equation here
         KVL.append(Node_d_Current)  # one equation here
-    
+
         # Ensure KVL has 5 elements
         while len(KVL) < 5:
             KVL.append(0.0)  # Fill with zeros if necessary
         return [KVL[0], KVL[1], KVL[2], KVL[3], KVL[4]]
         '''this is remement of debugging, left here for later as irvin is going to come back at a later date and find out
         why it doesn't match with the sim he made'''
-
     
 
     def AnalyzeCircuit(self):
@@ -77,8 +78,7 @@ if __name__ == "__main__":
     
     # Analyze the new circuit
     currents = network.AnalyzeCircuit()
-    
-        # Output the results in a better manner with units
+    # Output the results in a better manner with units
     print("Currents in the circuit:")
     print("I1 = {:.2f} ohms".format(currents[0]))
     print("I2 = {:.2f} ohms".format(currents[1]))
